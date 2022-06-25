@@ -15,16 +15,20 @@ CharItr charItr_value(const char *start, size_t length)
            return itr;
              
 }
+
 bool charItr_has_next(const CharItr *self)
 {
-      return false;
+      return self->cursor != self->sentinel;
 }
-
 
 char charItr_next(CharItr *self)
 {
-   return *(self->cursor + 1);
+      char lexeme = *(self->cursor);
+      self->cursor++;
+      return lexeme;
+
 }
+
 char charItr_peek(const CharItr *self)
 {
         return *(self->cursor);

@@ -10,8 +10,6 @@ TEST(charItr, return_charItr)
 {
     const char buffer[21] = "(a (a b))";
     CharItr itr = charItr_value(buffer, strlen(buffer));
-    CharItr itr1 =  itr;
-    //ASSERT_EQ(itr, itr1);
     ASSERT_EQ(itr.cursor, buffer);
     ASSERT_EQ(itr.sentinel, buffer + 9);
 }
@@ -39,13 +37,24 @@ TEST(charItr, char_peek)
 
 TEST(charItr, has_next_bool)
 {
-
     const char buffer[21] = "(a (a b))";
-    CharItr itr = charItr_value(buffer, 20);
+    CharItr itr = charItr_value(buffer, strlen(buffer));
 
     bool valid = charItr_has_next(&itr);
-    ASSERT_TRUE(valid);
-    ASSERT_FALSE(valid);
+    ASSERT_TRUE(valid == true);
+
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+    charItr_has_next(&itr);
+
+    bool line = charItr_has_next(&itr);
+    
+    ASSERT_FALSE(line == false);
 }
 
 TEST(charItr, next_char)
@@ -55,6 +64,11 @@ TEST(charItr, next_char)
     CharItr itr = charItr_value(buffer, 20);
 
     char next = charItr_next(&itr);
-    ASSERT_EQ(next, 'a');
+    ASSERT_EQ(next, '(');
+    char next_char = charItr_next(&itr);
+    ASSERT_EQ(next_char, 'a');
 }
+
+
+
 
