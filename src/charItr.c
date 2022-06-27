@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include "charItr.h"
 
+//static bool charItr_has_next(const CharItr *self)
+
 CharItr charItr_value(const char *start, size_t length)
 {
 
@@ -23,9 +25,12 @@ bool charItr_has_next(const CharItr *self)
 
 char charItr_next(CharItr *self)
 {
-      char lexeme = *(self->cursor);
-      self->cursor++;
-      return lexeme;
+      bool valid = charItr_has_next(self);
+      if (valid){
+        char lexeme = *(self->cursor);
+        self->cursor++;
+        return lexeme;
+      }
 
 }
 
