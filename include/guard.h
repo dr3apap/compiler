@@ -1,6 +1,5 @@
-
-#ifndef GUARDS_H
-#define GUARDS_H
+#ifndef GUARD_H
+#define GUARD_H
 
 #include <stdlib.h>
 #include "node.h"

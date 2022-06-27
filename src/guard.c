@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "node.h"
 
-Node* OOM_GURARD(void *ptr, char *file, size_t line)
+Node* OOM_GUARD(void *ptr, char *file, size_t line)
 {
     if (ptr != NULL)
         return ptr;
