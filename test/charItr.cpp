@@ -40,20 +40,22 @@ TEST(charItr, has_next_bool)
     CharItr itr = charItr_value(buffer, strlen(buffer));
 
     bool valid = charItr_has_next(&itr);
-    ASSERT_TRUE(valid == true);
+    EXPECT_TRUE(valid == true);
 
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
-    charItr_has_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
+    charItr_next(&itr);
 
-    bool line = charItr_has_next(&itr);
+
+    bool cursor = charItr_has_next(&itr);
     
-    ASSERT_FALSE(line == false);
+    EXPECT_TRUE(cursor == false);
 }
 
 TEST(charItr, next_char)
@@ -88,7 +90,7 @@ TEST(charItr, charItr_contract_test)
 
 
     bool valid = charItr_has_next(&itr);
-    ASSERT_TRUE(valid == true);
+    EXPECT_TRUE(valid == true);
 
     char next = charItr_next(&itr);
     ASSERT_EQ(next, '(');
@@ -103,11 +105,12 @@ TEST(charItr, charItr_contract_test)
     ASSERT_EQ(lexeme, 'a');
 
     valid = charItr_has_next(&itr);
-    ASSERT_TRUE(valid == true);
+    EXPECT_TRUE(valid == true);
 
     next = charItr_next(&itr);
     ASSERT_EQ(next, 'a');
 
+    charItr_next(&itr);            
     charItr_next(&itr);
     charItr_next(&itr);
     charItr_next(&itr);
@@ -120,10 +123,10 @@ TEST(charItr, charItr_contract_test)
 
     valid = charItr_has_next(&itr);
     
-    ASSERT_FALSE(valid == false);
+    EXPECT_TRUE(valid == false);
 
     ASSERT_EQ(*(itr.sentinel), '\0');
-    ASSERT_EQ(itr.cursor, itr.sentinel - 1);
+    ASSERT_EQ(itr.cursor, itr.sentinel);
 }
 
 

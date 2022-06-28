@@ -4,9 +4,11 @@
 
 Node* OOM_GUARD(void *ptr, char *file, size_t line)
 {
-    if (ptr != NULL)
-        return ptr;
-    fprintf(stderr, "Out of memory in %s on line %d\n", file, line);
+    if (ptr == NULL){ 
+        fprintf(stderr, "Out of memory in %s on line %ld\n", file, line);
+        exit(EXIT_FAILURE);
+    }
+    return ptr;
 }
 
 

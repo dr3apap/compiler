@@ -38,5 +38,5 @@ struct Node {
 Node* CharNode_new(char c);
 Node* PairNode_new(Node *left, Node *right);
 Node* ErrorNode_new(const char *msg);
-void* Node_drop(Node *self);
+int Node_drop(Node *self);
 #endif

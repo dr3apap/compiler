@@ -8,7 +8,7 @@ CharItr charItr_value(const char *start, size_t length)
 {
 
            char *cursor = start;
-           char *sentinel = start + length;
+           char *sentinel = cursor + length;
            CharItr itr = {
                  cursor,
                  sentinel, 

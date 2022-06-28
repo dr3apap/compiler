@@ -31,9 +31,19 @@ Node* ErrorNode_new(const char *msg)
     return node;
 }
     
-void* Node_drop(Node *self)
+int Node_drop(Node *self)
 {
-    free(self);
-    self = NULL;
-    return self;
+    NodeType pairNode = PAIR_NODE;
+
+    if (self->type == pairNode){
+         Node_drop(self->data.pair.left);
+         Node_drop(self->data.pair.right);
+    }
+
+        free(self);
+        self = NULL;
+        return 0;
 }
+
+
+

@@ -18,41 +18,32 @@ Scanner scanner_value(CharItr *char_itr)
 
 Token scanner_peek(const Scanner *self)
 {
-
-     char next_token = self->next;
-    if (next_token == '(' || next_token == ' ' || next_token == ')' || next_token != '(') 
-        return token_factory(next_token);
+        return token_factory(self->next);
 }
 
 Token scanner_next(Scanner *self)
 {
 
            bool valid = scanner_has_next(self);
-           
            if (valid){
-
-           Token token = token_factory(self->next);
-           charItr_next(self->itr);
+           Token token = token_factory(charItr_next(self->itr));
+           self->next = *(self->itr->cursor);
            return token;
            }
+
 }
 
 
 bool scanner_has_next(const Scanner *self)
 {
-     bool valid = charItr_has_next(self->itr);
-    if (valid ){ 
-        char lexeme = self->next;
-        return lexeme == '(' || lexeme == ' ' || lexeme == ')' || lexeme != '('; 
-    }
-    return valid;
+     return charItr_has_next(self->itr);
 }
 
 
 Token token_factory(char lexeme)
 {
        if (lexeme == '('){
-           TokenType type = PAIR_TOKEN;
+           TokenType type = LPAREN_TOKEN;
            Token token = {
                type,
                lexeme
@@ -68,7 +59,24 @@ Token token_factory(char lexeme)
                lexeme
            };
            return token;
+
+       } else if (lexeme == ')'){
+           TokenType type = RPAREN_TOKEN;
+           Token token = {
+               type,
+               lexeme
+           };
+           return token;
+
+       } else if (lexeme == ' ') {
+           TokenType type = SPACE_TOKEN;
+           Token token = {
+               type,
+               lexeme
+           };
+           return token;
        } else {
+           
            TokenType type = ERROR_TOKEN;
            Token token = {
                type,
