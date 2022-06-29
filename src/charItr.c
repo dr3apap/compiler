@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "charItr.h"
@@ -31,6 +32,11 @@ char charItr_next(CharItr *self)
         self->cursor++;
         return lexeme;
       }
+
+      return *(self->cursor);
+        
+      // fprintf(stderr, "Iterator out of bound\n");
+       //exit(EXIT_FAILURE);
 
 }
 

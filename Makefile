@@ -12,14 +12,14 @@ cc          := gcc
 cflags      := -Iinclude -std=c11 -Wall -O0 
 
 
-.PHONY: all build clean test unit_test test_all
+.PHONY:build clean test unit_test test_all
 
 all:${executable}
 
-${executable}:${obj_dir}
+${executable}:${obj_dir}/${objs}
 	${cc}  -o ${@} ${<}
 
-${obj_dir}:
+${obj_dir}/${objs}:
 	${cc} -c ${cflags} ${src}
 
 run:${executable}

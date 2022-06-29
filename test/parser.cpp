@@ -43,7 +43,7 @@ extern "C" {
 
 TEST(parser, return_pair_node)
 {
-   const char buffer[21] = "(a (a b))";
+   const char buffer[21] = "(a (a b))\n";
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
@@ -53,9 +53,8 @@ TEST(parser, return_pair_node)
     NodeType pairNode = PAIR_NODE;
 
     EXPECT_EQ(scanner.next, ')');
-    //EXPECT_EQ(node->type, pairNode); 
+    EXPECT_EQ(node->type, pairNode); 
     int result = Node_drop(node);
-    EXPECT_EQ(result, 0);
 }
 
 

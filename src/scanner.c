@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "scanner.h"
@@ -6,9 +7,9 @@
 
 //static bool scanner_has_next(const Scanner *self)
 
-Scanner scanner_value(CharItr *char_itr)
+Scanner scanner_value(CharItr char_itr)
 {
-    char next = *(char_itr->cursor); 
+    char next = *(char_itr.cursor); 
     Scanner scanner = {
         char_itr,
         next,
@@ -26,17 +27,21 @@ Token scanner_next(Scanner *self)
 
            bool valid = scanner_has_next(self);
            if (valid){
-           Token token = token_factory(charItr_next(self->itr));
-           self->next = *(self->itr->cursor);
+           Token token = token_factory(charItr_next(&(self->itr)));
+           self->next = *(self->itr.cursor);
            return token;
            }
 
+           return token_factory(charItr_next(&(self->itr)));
+
+           //fprintf(stderr, "Scanner out of bound\n");
+           //exit(EXIT_FAILURE);
 }
 
 
 bool scanner_has_next(const Scanner *self)
 {
-     return charItr_has_next(self->itr);
+     return charItr_has_next(&(self->itr));
 }
 
 

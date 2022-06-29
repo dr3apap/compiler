@@ -1,6 +1,8 @@
 #include "node.h"
 #include "parser.h"
 #include "scanner.h"
+Node *errorNodes[];
+size_t node_ref_count = 0;
 
 static Node* parse_pair(Scanner *scanner);
 static Node* parse_char(Scanner *scanner);
@@ -28,13 +30,15 @@ static Node* parse_pair(Scanner *scanner)
      if (scanner->next == ' '){ 
          next = scanner_next(scanner); 
      } else {
-         parse_error(scanner, "expect a space");
+         errorNodes[node_ref_count] = parse_error(scanner, "expect a space");
+         node_ref_count++;
      }
      Node *right = parse(scanner);
      if (scanner->next == ')') {
          next = scanner_next(scanner);
      } else {
-         parse_error(scanner, "expect a )");
+       errorNodes[node_ref_count]  = parse_error(scanner, "expect a )");
+       node_ref_count++;
      }
 
      return PairNode_new(left, right);
