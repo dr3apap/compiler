@@ -10,18 +10,18 @@
 #include "charItr.h"
 
 #define MAX_BUFFER_LENGTH 1024
-char buffer[MAX_BUFFER_LENGTH + 1];
 
-void ErrorNOde_drop(Node *node, size_t ref_count);
-bool read_next_line(char *buffer, size_t len);
-void node_print(Node *node, size_t spaces);
-void indent(size_t spaces);
-void zero_out_buffer(char *buffer, size_t len);
+static void ErrorNode_drop(Node **node, size_t ref_count);
+static bool read_next_line(char *buffer, size_t len);
+static void node_print(Node *node, size_t spaces);
+static void indent(size_t spaces);
+static void zero_out_buffer(char *buffer, size_t len);
 
 int main(void)
 {
-    extern Node *errorNodes; 
+    char buffer[MAX_BUFFER_LENGTH + 1];
     extern size_t node_ref_count;
+    extern Node *errorNodes[MAX_BUFFER_LENGTH]; 
 
     zero_out_buffer(buffer, MAX_BUFFER_LENGTH);
 
@@ -31,12 +31,12 @@ int main(void)
             Node *node = parse(&scanner);
             node_print(node, 0);
             Node_drop(node);
+            ErrorNode_drop(errorNodes, node_ref_count);
         }
     
-        ErrorNOde_drop(errorNodes, node_ref_count);
 }
 
-bool read_next_line(char *buffer, size_t length)
+static bool read_next_line(char *buffer, size_t length)
 {
     char c;
     bool valid = false;
@@ -52,22 +52,19 @@ bool read_next_line(char *buffer, size_t length)
     return valid;
 }
 
-void zero_out_buffer(char *buffer, size_t len)
+static void zero_out_buffer(char *buffer, size_t len)
 {
     for (int i = 0; i <= len; i++)
         buffer[i] = '\0';
 }
 
 
-void node_print(Node *node, size_t spaces)
+static void node_print(Node *node, size_t spaces)
 {
-    NodeType charNode = CHAR_NODE;
-    NodeType pairNode = PAIR_NODE;
-    //NodeType errorNode = ERROR_NODE;
 
-    if (node->type == charNode)
+    if (node->type == CHAR_NODE)
         printf("Char('%c')\n", node->data.value);
-    if (node->type == pairNode){
+    if (node->type == PAIR_NODE){
         printf("Pair(\n");
         node_print(node->data.pair.left, 0);
         node_print(node->data.pair.right, 0);
@@ -78,17 +75,18 @@ void node_print(Node *node, size_t spaces)
 
 }
 
-void indent(size_t spaces)
+static void indent(size_t spaces)
 {
     for (int i = 0; i < spaces; i++)
         printf("    \n");
 }
 
 
-void ErrorNOde_drop(Node *node, size_t ref_count)
+static void ErrorNode_drop(Node **node, size_t ref_count)
 {
     while (ref_count > 0){
-        Node_drop(node);
+        Node_drop(*node);
+        ++node;
         --ref_count;
     }
 }

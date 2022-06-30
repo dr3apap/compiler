@@ -1,7 +1,8 @@
 #include "node.h"
 #include "parser.h"
 #include "scanner.h"
-Node *errorNodes[];
+#define MAX_BUFF_ERR 1024
+Node *errorNodes[MAX_BUFF_ERR];
 size_t node_ref_count = 0;
 
 static Node* parse_pair(Scanner *scanner);
@@ -30,18 +31,21 @@ static Node* parse_pair(Scanner *scanner)
      if (scanner->next == ' '){ 
          next = scanner_next(scanner); 
      } else {
-         errorNodes[node_ref_count] = parse_error(scanner, "expect a space");
-         node_ref_count++;
+         *(errorNodes + node_ref_count) = left;
+         ++node_ref_count;
+         return parse_error(scanner, "expect a space ' ' ");
      }
-     Node *right = parse(scanner);
+        Node *right = parse(scanner);
      if (scanner->next == ')') {
          next = scanner_next(scanner);
      } else {
-       errorNodes[node_ref_count]  = parse_error(scanner, "expect a )");
-       node_ref_count++;
+        *(errorNodes + node_ref_count) = PairNode_new(left, right);
+        ++node_ref_count;
+        return parse_error(scanner, "expect a ')' ");
      }
+         
+      return PairNode_new(left, right);
 
-     return PairNode_new(left, right);
 }
 
 static Node* parse_char(Scanner *scanner)

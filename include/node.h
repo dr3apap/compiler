@@ -2,9 +2,9 @@
 #define NODE_H
 #include <stdlib.h>
 typedef enum {
-    ERROR_NODE = -1,
-    CHAR_NODE = 0,
-    PAIR_NODE = 1,
+    ERROR_NODE = 1,
+    CHAR_NODE = 2,
+    PAIR_NODE = 3,
 } NodeType;
 
 typedef struct Node Node; // forward declaration

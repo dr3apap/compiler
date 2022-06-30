@@ -33,14 +33,14 @@ Node* ErrorNode_new(const char *msg)
     
 int Node_drop(Node *self)
 {
-    NodeType pairNode = PAIR_NODE;
 
-    if (self->type == pairNode){
+    if (self->type == PAIR_NODE){
          Node_drop(self->data.pair.left);
          Node_drop(self->data.pair.right);
     }
 
-        free(self);
+        if (self != NULL)
+            free(self);
         self = NULL;
         return 0;
 }

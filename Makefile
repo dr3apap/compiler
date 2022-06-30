@@ -1,36 +1,54 @@
 project     := parser
-build_dir   := ./build
-executable  := ${bin}/${project}
-bin         := ${build_dir}/bin
-obj_dir     := ${build_dir}/obj
-test_dir    := ${build_dir}/test
+
+# Variables for path of source, header, and test files
+inc_dir    := ./include
 src_dir     := ./src
-incl_dir    := ./include
-objs        := $(patsubst %.c,%.o,$(wildcard ${src_dir}/*.c)) 
-src         := $(wildcard ${src_dir}/*.c)
-cc          := gcc 
-cflags      := -Iinclude -std=c11 -Wall -O0 
+sources     := $(wildcard ${src_dir}/*.c)
+test_dir    := ./test
+unit_tests  := $(wildcard ${test/*.cpp})
+
+# Variables for paths of object files and binary targets
+build_dir           := ./build
+obj_dir             := ${build_dir}/obj
+bin_dir             := ${build_dir}/bin
+unit_test_build_dir := ${build_dir}/test
+executable          := ${bin_dir}/${project}
+build_dirs          := ${obj_dir} ${bin_dir} ${unit_test_build_dir}  
+objs        := $(subst .c,.o,$(subst ${src_dir},${obj_dir},${sources})) 
+
+# Variables for compiler and compiler flags, and linker
+cc          := gcc # Using gcc compiler (alternative: clang) 
+cflags      := -I${inc_dir} -g -Wall -std=c11 -O0 
+
+# Variables for testing memory leak-check
+valgrind    := $(valgrind --leak-check=full)
 
 
-.PHONY:build clean test unit_test test_all
+.PHONY:all run clean test unit_test leak-check
 
-all:${executable}
+all:${executable} # all is the default goal
 
-${executable}:${obj_dir}/${objs}
-	${cc}  -o ${@} ${<}
 
-${obj_dir}/${objs}:
-	${cc} -c ${cflags} ${src}
-
-run:${executable}
+run:${executable} # Execute the project's binary file
 	@${^}
 
+${executable}:${objs} | ${bin_dir} # Build the project by combining all object files
+	${cc}  ${cflags} -o ${@} ${^}
+
+${obj_dir}/%.o: ${src_dir}/%.c | ${obj_dir} # Build object files from sources in a template
+	${cc} ${cflags} -c -o ${@} ${<}
+
+${build_dirs}:
+	mkdir -p ${obj_dir} ${bin_dir} ${unit_test_build_dir}
+
+
+leak-check:
+	${valgrind} ${executable}
 
 test:
 	cmake -S . -B ${test_dir}
 	cmake --build ${test_dir}
 	cd ${test_dir} && ctest
 	
-
 clean:
 	rm -rf ${build_dir}
