@@ -15,15 +15,14 @@ static void ErrorNode_drop(Node **node, size_t ref_count);
 static bool read_next_line(char *buffer, size_t len);
 static void node_print(Node *node, size_t spaces);
 static void indent(size_t spaces);
-static void zero_out_buffer(char *buffer, size_t len);
 
 int main(void)
 {
     char buffer[MAX_BUFFER_LENGTH + 1];
+    extern Node *errorNodes[MAX_BUFFER_LENGTH];
     extern size_t node_ref_count;
-    extern Node *errorNodes[MAX_BUFFER_LENGTH]; 
 
-    zero_out_buffer(buffer, MAX_BUFFER_LENGTH);
+    memset(buffer, '\0', sizeof(buffer));
 
     while (read_next_line(buffer, MAX_BUFFER_LENGTH)){
             CharItr itr = charItr_value(buffer, strlen(buffer));
@@ -31,9 +30,9 @@ int main(void)
             Node *node = parse(&scanner);
             node_print(node, 0);
             Node_drop(node);
-            ErrorNode_drop(errorNodes, node_ref_count);
         }
-    
+
+            ErrorNode_drop(errorNodes, node_ref_count); // Clean up all memory allocated for nodes that resulted in error.
 }
 
 static bool read_next_line(char *buffer, size_t length)
@@ -52,33 +51,28 @@ static bool read_next_line(char *buffer, size_t length)
     return valid;
 }
 
-static void zero_out_buffer(char *buffer, size_t len)
-{
-    for (int i = 0; i <= len; i++)
-        buffer[i] = '\0';
-}
-
 
 static void node_print(Node *node, size_t spaces)
 {
-
+    indent(spaces);
     if (node->type == CHAR_NODE)
         printf("Char('%c')\n", node->data.value);
     if (node->type == PAIR_NODE){
         printf("Pair(\n");
-        node_print(node->data.pair.left, 0);
-        node_print(node->data.pair.right, 0);
+        node_print(node->data.pair.left, spaces + 2);
+        node_print(node->data.pair.right, spaces + 2);
+        indent(spaces);
         printf(")\n");
     } else if (node->type == ERROR_NODE){
-        printf("Error('%s')\n", node->data.error);
+        fprintf(stderr, "Error: %s\n", node->data.error);
     }
 
 }
 
 static void indent(size_t spaces)
 {
-    for (int i = 0; i < spaces; i++)
-        printf("    \n");
+    for (size_t i = 0; i < spaces; i++)
+        putchar(' ');
 }
 
 

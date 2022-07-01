@@ -33,10 +33,8 @@ char charItr_next(CharItr *self)
         return lexeme;
       }
 
-      return *(self->cursor);
-        
-      // fprintf(stderr, "Iterator out of bound\n");
-       //exit(EXIT_FAILURE);
+       fprintf(stderr, "Iterator out of bound\n");
+       exit(EXIT_FAILURE);
 
 }
 

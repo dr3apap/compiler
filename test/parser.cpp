@@ -7,55 +7,86 @@ extern "C" {
 }
 
 
-//TEST(parser, return_pairNode)
-//{
-//   const char buffer[21] = "(a)";
-//    int len = strlen(buffer);
-//    CharItr itr = charItr_value(buffer, len);
-//
-//    Scanner scanner = scanner_value(&itr);
-//    Node *node = parse(&scanner);
-//
-//    NodeType charNode = CHAR_NODE;
-//
-//    ASSERT_EQ(node->type, charNode); 
-//    ASSERT_EQ(scanner.next, ')');
-//    Node_drop(node);
-//}
-//
-//
-//TEST(parser, return_lparen_token)
-//{
-//   const char buffer[21] = "(a";
-//    int len = strlen(buffer);
-//    CharItr itr = charItr_value(buffer, len);
-//
-//    Scanner scanner = scanner_value(&itr);
-//    Node *node = parse(&scanner);
-//
-//    NodeType pairNode = PAIR_NODE;
-//
-//    ASSERT_EQ(scanner.next, ')');
-//
-//    ASSERT_EQ(node->type, pairNode); 
-//    Node_drop(node);
-//}
 
 TEST(parser, return_pair_node)
 {
-   const char buffer[21] = "(a (a b))\n";
+   const char buffer[21] = "(a b))";
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
-    Scanner scanner = scanner_value(&itr);
+    Scanner scanner = scanner_value(itr);
     Node *node = parse(&scanner);
 
-    NodeType pairNode = PAIR_NODE;
 
     EXPECT_EQ(scanner.next, ')');
-    EXPECT_EQ(node->type, pairNode); 
+    EXPECT_EQ(node->type, PAIR_NODE); 
     int result = Node_drop(node);
 }
+
+TEST(parser, expect_lparen_or_char_error_node)
+{
+   const char buffer[21] = {'(', '\0'};
+    int len = strlen(buffer);
+    CharItr itr = charItr_value(buffer, len);
+
+    Scanner scanner = scanner_value(itr);
+    Node *node = parse(&scanner);
+
+    EXPECT_EQ(node->type, ERROR_NODE);
+    
+    EXPECT_EQ(scanner_peek(&scanner).type, END_TOKEN);
+    EXPECT_STREQ(node->data.error, "expect a '(' or char"); 
+    int result = Node_drop(node);
+}
+
+TEST(parser, return_expect_space_error_node)
+{
+   const char buffer[21] = "(a";
+    int len = strlen(buffer);
+    CharItr itr = charItr_value(buffer, len);
+
+    Scanner scanner = scanner_value(itr);
+    Node *node = parse(&scanner);
+
+
+    EXPECT_EQ(node->type, ERROR_NODE); 
+    EXPECT_STREQ(node->data.error, "expect a space ' '"); 
+    int result = Node_drop(node);
+}
+
+TEST(parser, return_expect_rparen_error_node)
+{
+   const char buffer[21] = "(a b";
+    int len = strlen(buffer);
+    CharItr itr = charItr_value(buffer, len);
+
+    Scanner scanner = scanner_value(itr);
+    Node *node = parse(&scanner);
+
+
+    EXPECT_EQ(node->type, ERROR_NODE); 
+    EXPECT_STREQ(node->data.error, "expect a ')'"); 
+    int result = Node_drop(node);
+}
+
+
+
+TEST(parser, return_expect_lparen_or_char_error_node)
+{
+   const char buffer[21] = " ";
+    int len = strlen(buffer);
+    CharItr itr = charItr_value(buffer, len);
+
+    Scanner scanner = scanner_value(itr);
+    Node *node = parse(&scanner);
+
+    EXPECT_EQ(node->type, ERROR_NODE); 
+    EXPECT_STREQ(node->data.error, "expect a '(' or char"); 
+    int result = Node_drop(node);
+}
+
+
+
 
 
 TEST(parser, return_charNode)
@@ -65,7 +96,7 @@ TEST(parser, return_charNode)
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
-    Scanner scanner = scanner_value(&itr);
+    Scanner scanner = scanner_value(itr);
     Node *node = parse(&scanner);
 
     NodeType charNode = CHAR_NODE;

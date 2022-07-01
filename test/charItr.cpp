@@ -58,6 +58,19 @@ TEST(charItr, has_next_bool)
     EXPECT_TRUE(cursor == false);
 }
 
+TEST(charItr, has_next_cursor)
+{
+    const char buffer[21] = "(";
+    CharItr itr = charItr_value(buffer, strlen(buffer));
+
+    bool valid = charItr_has_next(&itr);
+    EXPECT_TRUE(valid == true);
+    charItr_next(&itr);
+    valid = charItr_has_next(&itr);
+    EXPECT_TRUE(valid == false);
+}
+
+
 TEST(charItr, next_char)
 {
     

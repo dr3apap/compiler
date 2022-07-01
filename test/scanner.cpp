@@ -16,10 +16,10 @@ TEST(scanner, new_scanner)
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
-    Scanner scanner = scanner_value(&itr);
+    Scanner scanner = scanner_value(itr);
 
     ASSERT_EQ(scanner.next, *(itr.cursor));
-    ASSERT_EQ(scanner.itr->sentinel, buffer + len);
+    ASSERT_EQ(scanner.itr.sentinel, buffer + len);
     ASSERT_EQ(scanner.next, '(');
 }
     
@@ -31,7 +31,7 @@ TEST(scanner, token_peek)
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
-    const Scanner scanner = scanner_value(&itr);
+    const Scanner scanner = scanner_value(itr);
     Token token = scanner_peek(&scanner);
     TokenType lparenToken = LPAREN_TOKEN;
     TokenType charToken = CHAR_TOKEN;
@@ -50,13 +50,13 @@ TEST(scanner, has_Next_token)
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
-    Scanner scanner = scanner_value(&itr);
+    Scanner scanner = scanner_value(itr);
     bool valid = scanner_has_next(&scanner);
+    EXPECT_TRUE(valid == true);
 
-    charItr_next(&itr);
+    charItr_next(&scanner.itr);
     valid = scanner_has_next(&scanner);
-    ASSERT_EQ(valid, false);
-    ASSERT_FALSE(valid == true);
+    EXPECT_FALSE(valid == true);
 }
 
 TEST(scanner, generate_token)
@@ -86,7 +86,7 @@ TEST(scanner, get_next_token)
     int len = strlen(buffer);
     CharItr itr = charItr_value(buffer, len);
 
-    Scanner scanner = scanner_value(&itr);
+    Scanner scanner = scanner_value(itr);
 
     TokenType lparen = LPAREN_TOKEN;
     TokenType charToken = CHAR_TOKEN;
@@ -116,6 +116,6 @@ TEST(scanner, get_next_token)
 
     bool valid = scanner_has_next(&scanner);
     EXPECT_TRUE(valid == false);
-    ASSERT_EQ(itr.cursor, itr.sentinel);
+    ASSERT_EQ(scanner.itr.cursor, scanner.itr.sentinel);
 
 }

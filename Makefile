@@ -46,9 +46,9 @@ leak-check:
 	${valgrind} ${executable}
 
 test:
-	cmake -S . -B ${test_dir}
-	cmake --build ${test_dir}
-	cd ${test_dir} && ctest
+	cmake -S . -B ${unit_test_build_dir}
+	cmake --build ${unit_test_build_dir}
+	cd ${unit_test_build_dir} && ctest
 	
 clean:
 	rm -rf ${build_dir}

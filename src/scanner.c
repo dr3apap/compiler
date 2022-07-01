@@ -32,10 +32,8 @@ Token scanner_next(Scanner *self)
            return token;
            }
 
-           return token_factory(charItr_next(&(self->itr)));
-
-           //fprintf(stderr, "Scanner out of bound\n");
-           //exit(EXIT_FAILURE);
+           fprintf(stderr, "Scanner out of bound\n");
+           exit(EXIT_FAILURE);
 }
 
 
@@ -48,43 +46,44 @@ bool scanner_has_next(const Scanner *self)
 Token token_factory(char lexeme)
 {
        if (lexeme == '('){
-           TokenType type = LPAREN_TOKEN;
            Token token = {
-               type,
+               LPAREN_TOKEN,
                lexeme
            };
            return token;
-       }
 
-       else if (lexeme != '(' && lexeme != ')' && lexeme != ' '){
-
-           TokenType type = CHAR_TOKEN;
+       } else if (lexeme == '\0') {
            Token token = {
-               type,
+               END_TOKEN,
+               lexeme
+           };
+           return token;
+       } else if (lexeme != '(' && lexeme != ')' && lexeme != ' '){
+
+           Token token = {
+               CHAR_TOKEN,
                lexeme
            };
            return token;
 
        } else if (lexeme == ')'){
-           TokenType type = RPAREN_TOKEN;
            Token token = {
-               type,
+               RPAREN_TOKEN,
                lexeme
            };
            return token;
 
        } else if (lexeme == ' ') {
-           TokenType type = SPACE_TOKEN;
            Token token = {
-               type,
+               SPACE_TOKEN,
                lexeme
            };
            return token;
+
        } else {
            
-           TokenType type = ERROR_TOKEN;
            Token token = {
-               type,
+               ERROR_TOKEN,
                lexeme
            };
            return token;
